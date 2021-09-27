@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.core.Is.is;
@@ -91,6 +91,31 @@ class SpringLessonsCrudEndpointsApplicationTests {
 				.andExpect(jsonPath("$.title", is("SQL TEST")));
 
 	}
+
+
+	@Transactional
+	@Rollback
+	@Test
+
+	public void patchTest() throws Exception {
+		Lesson lesson = new Lesson();
+		lesson.setTitle("Monday Sucks");
+		SimpleDateFormat formmater = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = formmater.parse("2021-09-27");
+		lesson.setDeliveredOn(date);
+
+		this.repository.save(lesson);
+
+		String jason = "{\"id\" : 1, \"title\": \"SQL TEST\",\"deliveredOn\": \"2017-04-06\"}";
+		this.mvc.perform(patch("/lesson/1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(jason))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.title", is("SQL TEST")));
+
+	}
+
 
 }
 
