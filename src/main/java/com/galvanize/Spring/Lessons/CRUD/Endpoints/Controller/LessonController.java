@@ -5,6 +5,9 @@ import com.galvanize.Spring.Lessons.CRUD.Endpoints.Model.Lesson;
 import com.galvanize.Spring.Lessons.CRUD.Endpoints.Repository.LessonRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -46,4 +49,22 @@ public class LessonController {
         }
         else {return this.repository.save(lesson);}
     }
+
+    @GetMapping("/find/{title}")
+    public  Iterable<Lesson> getBySpecifiedTitle(@PathVariable String title){
+         return this.repository.findByTitle(title);
+            }
+
+            @GetMapping("/between")
+            public Iterable<Lesson> getAllByDateRangeSearch(@RequestParam String date1, @RequestParam String date2) throws ParseException {
+
+                SimpleDateFormat formatter = new SimpleDateFormat("yyy-MM-dd");
+                Date startDate = formatter.parse(date1);
+                Date endDate = formatter.parse(date2);
+
+
+
+            return this.repository.findByDeliveredOnBetween(startDate, endDate);
+            }
+
 }
