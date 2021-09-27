@@ -40,7 +40,10 @@ public class LessonController {
     }
 
     @PatchMapping("{id}")
-    public Lesson patchDataRowSQL(@RequestBody Lesson lesson){
-      return this.repository.save(lesson);
+    public Object patchDataRowSQL(@RequestBody Lesson lesson){
+        if (this.repository.findById(lesson.getId()).isEmpty()){
+            return lesson.getId() + " is not a valid SQL ID. Please try again.";
+        }
+        else {return this.repository.save(lesson);}
     }
 }
